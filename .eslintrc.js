@@ -1,9 +1,9 @@
 module.exports = {
+    "extends": "eslint-config-airbnb-base",
     "env": {
         "browser": true,
         "es6": true
     },
-    "extends": "airbnb-base",
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"

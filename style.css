@@ -1,3 +1,46 @@
+@keyframes toDown {
+  0% { 
+    transform : translate(0, 0);
+    z-index: 1;
+  }
+  100% {
+    transform : translate(0, 100%);
+    z-index: 1;
+  }
+}
+
+@keyframes toTop {
+  0% { 
+    transform : translate(0, 0);
+    z-index: 1;
+  }
+  100% {
+    transform : translate(0, -100%);
+    z-index: 1;
+  }
+}
+
+@keyframes toLeft {
+  0% { 
+    transform : translate(0, 0);
+    z-index: 1;
+  }
+  100% {
+    transform : translate(-100%, 0);
+    z-index: 1;
+  }
+}
+
+@keyframes toRight {
+  0% { 
+    transform : translate(0, 0);
+    z-index: 1;
+  }
+  100% {
+    transform : translate(100%, 0);
+    z-index: 1;
+  }
+}
 .container {
   width: 40vw;
   height: 40vw;
@@ -20,6 +63,7 @@
   user-select: none;  
   position: relative;
   background-color: white;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
