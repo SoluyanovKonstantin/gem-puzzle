@@ -1,7 +1,61 @@
-const rowLength = 4;
-const cells = document.querySelectorAll('.cell');
+let rowLength = 4;
 let isMove = false;
+let stepsCount = 0;
+let array = [];
+let timer = 0;
+let cell = [];
 
+function shuffleArray(arr) {
+  let copyArray = arr.slice(), temporaryValue;
+  let currentIndex = arr.length;
+
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+
+    currentIndex -= 1;
+
+    temporaryValue = copyArray[currentIndex];
+    copyArray[currentIndex] = copyArray[randomIndex];
+    copyArray[randomIndex] = temporaryValue;
+  }
+
+  return copyArray;
+}
+
+function createField(rowLength) {
+  let arr = [];
+  for (let i=0; i<rowLength*rowLength - 1; i += 1) {
+    arr.push(i+1);
+  }
+  arr.push(0);
+  let bool = true;
+  while(bool) {
+    arr = shuffleArray(arr);
+    //проверка на проходимость
+    let inv = 0;
+    for (let i=0; i<arr.length; i += 1)
+      if (arr[i])
+        for (let j=0; j<i; j += 1)
+          if (arr[j] > arr[i])
+            inv += 1;
+    for (let i=0; i<arr.length; i += 1)
+      if (arr[i] === 0)
+        inv += 1 + Math.floor(i / rowLength);
+    
+    bool = inv % 2 === 0 ? false : true;
+  }
+  let container = document.querySelector('.container');
+  for (let i = 0; i < arr.length; i += 1) {
+    let cell = document.createElement('div');
+    cell.classList.add('cell');
+    cell.innerHTML = arr[i] !== 0 ? arr[i] : '&nbsp;';
+    container.append(cell);
+  }
+  cells = document.querySelectorAll('.cell');
+}
+
+createField(rowLength);
+ 
 function drag(evt, item, index, device){
   const end = device === 'computer' ? 'mouseup' : 'touchend';
   const middle = device === 'computer' ? 'mousemove' : 'touchmove';
@@ -67,9 +121,14 @@ function drag(evt, item, index, device){
 };
 
 cells.forEach((item, index)=>{
-  item.addEventListener('mousedown', (evt)=>{drag(evt, item,index, 'computer')})
-  item.addEventListener('touchstart', (evt)=>{drag(evt, item,index, 'phone')})
+  item.addEventListener('mousedown', (evt)=>{
+    drag(evt, item,index, 'computer');
+  });
+  item.addEventListener('touchstart', (evt)=>{
+    drag(evt, item,index, 'phone');
+  });
   item.addEventListener('click', (evt)=>{
+
     if (isMove) {
       isMove = false;
       return;
