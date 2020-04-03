@@ -5,6 +5,24 @@ let array = [];
 let timer = 0;
 let cell = [];
 
+let timerString = '00:00:0';
+
+setInterval(() => {
+  timer += 100;
+  let temporaryTimer = timer;
+  let ms = temporaryTimer % 1000;
+  ms = !ms ? '000' : ms; 
+  temporaryTimer = Math.floor(temporaryTimer/1000);
+  let sec = temporaryTimer % 60 + '';
+  sec = sec.length === 1 ? '0' + sec : sec;
+  temporaryTimer = Math.floor(temporaryTimer/60);
+  let min = temporaryTimer % 60 + '';
+  min = min.length === 1 ? '0' + min : min;
+  timerString = min + ':' + sec + ':' + ms;
+  timerString = timerString.slice(0, timerString.length - 2);
+  document.querySelector('.clock').innerText = timerString;
+}, 100);
+
 function shuffleArray(arr) {
   let copyArray = arr.slice(), temporaryValue;
   let currentIndex = arr.length;
@@ -20,6 +38,21 @@ function shuffleArray(arr) {
   }
 
   return copyArray;
+}
+
+function fillField(arr) {
+  let clock = document.createElement('div');
+  clock.classList.add('clock');
+  clock.innerText = timerString;
+  document.body.prepend(clock);
+  let container = document.querySelector('.container');
+  for (let i = 0; i < arr.length; i += 1) {
+    let cell = document.createElement('div');
+    cell.classList.add('cell');
+    cell.innerHTML = arr[i] !== 0 ? arr[i] : '&nbsp;';
+    container.append(cell);
+  }
+  cells = document.querySelectorAll('.cell');
 }
 
 function createField(rowLength) {
@@ -44,14 +77,7 @@ function createField(rowLength) {
     
     bool = inv % 2 === 0 ? false : true;
   }
-  let container = document.querySelector('.container');
-  for (let i = 0; i < arr.length; i += 1) {
-    let cell = document.createElement('div');
-    cell.classList.add('cell');
-    cell.innerHTML = arr[i] !== 0 ? arr[i] : '&nbsp;';
-    container.append(cell);
-  }
-  cells = document.querySelectorAll('.cell');
+  fillField(arr);
 }
 
 createField(rowLength);

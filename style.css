@@ -51,6 +51,11 @@
   font-size: 0;
 }
 
+body {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .cell {
   width: 25%;
   height: 25%;
@@ -66,13 +71,25 @@
   cursor: pointer;
 }
 
+.clock {
+  text-align: center;
+  font-size: 2vw;
+}
+
+body {
+  width: 95vw;
+}
+
 @media (max-width: 768px) {
   .container{
-    width: 99vw;
-    height: 99vw;
+    width: 95vw;
+    height: 95vw;
   }
 
   .cell {
     font-size: 10vw;
+  }
+  .clock {
+    font-size: 5vw;
   }
 }
