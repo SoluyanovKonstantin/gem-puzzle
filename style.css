@@ -58,6 +58,15 @@
   margin-right: auto;
 }
 
+.menu div {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.reset {
+  height: 3vw;
+}
+
 .step {
   font-size: 2vw;
 }

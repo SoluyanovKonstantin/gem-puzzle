@@ -54,6 +54,11 @@ step.classList.add('step');
 step.innerText = 'Ходов: ' + stepsCount;
 document.querySelector('.menu').append(step);
 
+let reset = document.createElement('button');
+reset.classList.add('reset');
+reset.innerText = 'Начать заново';
+document.querySelector('.menu').append(reset);
+
 function fillField(arr) {
   
   let container = document.querySelector('.container');
@@ -159,6 +164,71 @@ function drag(evt, item, index, device){
   });
 };
 
+function moveByClick(evt, item, index) {
+  if (isMove) {
+    isMove = false;
+    return;
+  }
+  if ((index+1) % rowLength !== 1 && cells[index - 1].innerHTML === '&nbsp;') {
+    item.style.animation = 'toLeft 0.5s';
+    setTimeout(()=>{
+      cells[index - 1].innerHTML = item.innerHTML;
+      item.innerHTML = '&nbsp;';
+      item.style.animation = '';
+      stepsCount += 1;
+      step.innerText = 'Ходов: ' + stepsCount;
+    }, 440);
+  } else if ((index+1) % rowLength !== 0 && cells[index + 1].innerHTML === '&nbsp;') {
+    item.style.animation = 'toRight 0.5s';
+    setTimeout(()=>{
+      cells[index + 1].innerHTML = item.innerHTML;
+      item.innerHTML = '&nbsp;';
+      item.style.animation = '';
+      stepsCount += 1;
+      step.innerText = 'Ходов: ' + stepsCount;
+    }, 440);
+  } else if ((index+1) > rowLength && cells[index - rowLength].innerHTML === '&nbsp;') {
+    item.style.animation = 'toTop 0.5s';
+    setTimeout(()=>{
+      cells[index - rowLength].innerHTML = item.innerHTML;
+      item.innerHTML = '&nbsp;';
+      item.style.animation = '';
+      stepsCount += 1;
+      step.innerText = 'Ходов: ' + stepsCount;
+    }, 440);
+  } else if ((index+1) <= rowLength*(rowLength-1) && cells[index + rowLength].innerHTML === '&nbsp;') {
+    item.style.animation = 'toDown 0.5s';
+    setTimeout(()=>{
+      cells[index + rowLength].innerHTML = item.innerHTML;
+      item.innerHTML = '&nbsp;';
+      item.style.animation = '';
+      stepsCount += 1;
+      step.innerText = 'Ходов: ' + stepsCount;
+    }, 440);
+  }   
+}
+
+document.querySelector('.reset').addEventListener('click', (evt)=>{
+  cells.forEach((item)=>{
+    item.remove();
+  })
+  createField(rowLength);
+  stepsCount = 0;
+  step.innerText = 'Ходов: ' + stepsCount;
+  timer = 0;
+  cells.forEach((item, index)=>{
+    item.addEventListener('mousedown', (evt)=>{
+      drag(evt, item,index, 'computer');
+    });
+    item.addEventListener('touchstart', (evt)=>{
+      drag(evt, item,index, 'phone');
+    });
+    item.addEventListener('click', (evt)=>{
+      moveByClick(evt, item, index);
+    });
+  });
+})
+
 cells.forEach((item, index)=>{
   item.addEventListener('mousedown', (evt)=>{
     drag(evt, item,index, 'computer');
@@ -167,49 +237,6 @@ cells.forEach((item, index)=>{
     drag(evt, item,index, 'phone');
   });
   item.addEventListener('click', (evt)=>{
-
-    if (isMove) {
-      isMove = false;
-      return;
-    }
-    if ((index+1) % rowLength !== 1 && cells[index - 1].innerHTML === '&nbsp;') {
-      item.style.animation = 'toLeft 0.5s';
-      setTimeout(()=>{
-        cells[index - 1].innerHTML = item.innerHTML;
-        item.innerHTML = '&nbsp;';
-        item.style.animation = '';
-        stepsCount += 1;
-        step.innerText = 'Ходов: ' + stepsCount;
-      }, 440);
-    } else if ((index+1) % rowLength !== 0 && cells[index + 1].innerHTML === '&nbsp;') {
-      item.style.animation = 'toRight 0.5s';
-      setTimeout(()=>{
-        cells[index + 1].innerHTML = item.innerHTML;
-        item.innerHTML = '&nbsp;';
-        item.style.animation = '';
-        stepsCount += 1;
-        step.innerText = 'Ходов: ' + stepsCount;
-      }, 440);
-    } else if ((index+1) > rowLength && cells[index - rowLength].innerHTML === '&nbsp;') {
-      item.style.animation = 'toTop 0.5s';
-      setTimeout(()=>{
-        cells[index - rowLength].innerHTML = item.innerHTML;
-        item.innerHTML = '&nbsp;';
-        item.style.animation = '';
-        stepsCount += 1;
-        step.innerText = 'Ходов: ' + stepsCount;
-      }, 440);
-    } else if ((index+1) <= rowLength*(rowLength-1) && cells[index + rowLength].innerHTML === '&nbsp;') {
-      item.style.animation = 'toDown 0.5s';
-      setTimeout(()=>{
-        cells[index + rowLength].innerHTML = item.innerHTML;
-        item.innerHTML = '&nbsp;';
-        item.style.animation = '';
-        stepsCount += 1;
-        step.innerText = 'Ходов: ' + stepsCount;
-      }, 440);
-    }   
+    moveByClick(evt, item, index);
   });
-
-  
 });
