@@ -39,12 +39,23 @@ function shuffleArray(arr) {
 
   return copyArray;
 }
+//Генерация интерфейса;
+let clock = document.createElement('div');
+clock.classList.add('clock');
+clock.innerText = timerString;
+document.body.prepend(clock);
+
+let menu = document.createElement('div');
+menu.classList.add('menu');
+document.body.append(menu);
+
+let step = document.createElement('div');
+step.classList.add('step');
+step.innerText = 'Ходов: ' + stepsCount;
+document.querySelector('.menu').append(step);
 
 function fillField(arr) {
-  let clock = document.createElement('div');
-  clock.classList.add('clock');
-  clock.innerText = timerString;
-  document.body.prepend(clock);
+  
   let container = document.querySelector('.container');
   for (let i = 0; i < arr.length; i += 1) {
     let cell = document.createElement('div');
@@ -125,6 +136,8 @@ function drag(evt, item, index, device){
       else if (direction === 'bottom') direction = rowLength;
       cells[index + direction].innerHTML = item.innerHTML;
       item.innerHTML = '&nbsp;';
+      stepsCount += 1;
+      step.innerText = 'Ходов: ' + stepsCount;
     }
   }
   
@@ -165,6 +178,8 @@ cells.forEach((item, index)=>{
         cells[index - 1].innerHTML = item.innerHTML;
         item.innerHTML = '&nbsp;';
         item.style.animation = '';
+        stepsCount += 1;
+        step.innerText = 'Ходов: ' + stepsCount;
       }, 440);
     } else if ((index+1) % rowLength !== 0 && cells[index + 1].innerHTML === '&nbsp;') {
       item.style.animation = 'toRight 0.5s';
@@ -172,6 +187,8 @@ cells.forEach((item, index)=>{
         cells[index + 1].innerHTML = item.innerHTML;
         item.innerHTML = '&nbsp;';
         item.style.animation = '';
+        stepsCount += 1;
+        step.innerText = 'Ходов: ' + stepsCount;
       }, 440);
     } else if ((index+1) > rowLength && cells[index - rowLength].innerHTML === '&nbsp;') {
       item.style.animation = 'toTop 0.5s';
@@ -179,6 +196,8 @@ cells.forEach((item, index)=>{
         cells[index - rowLength].innerHTML = item.innerHTML;
         item.innerHTML = '&nbsp;';
         item.style.animation = '';
+        stepsCount += 1;
+        step.innerText = 'Ходов: ' + stepsCount;
       }, 440);
     } else if ((index+1) <= rowLength*(rowLength-1) && cells[index + rowLength].innerHTML === '&nbsp;') {
       item.style.animation = 'toDown 0.5s';
@@ -186,6 +205,8 @@ cells.forEach((item, index)=>{
         cells[index + rowLength].innerHTML = item.innerHTML;
         item.innerHTML = '&nbsp;';
         item.style.animation = '';
+        stepsCount += 1;
+        step.innerText = 'Ходов: ' + stepsCount;
       }, 440);
     }   
   });
