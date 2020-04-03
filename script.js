@@ -64,6 +64,62 @@ switcher.classList.add('switcher');
 switcher.innerText = 'Стоп';
 document.querySelector('.menu').append(switcher);
 
+let menuButton = document.createElement('button');
+menuButton.classList.add('menuButton');
+menuButton.innerText = 'Меню';
+document.querySelector('.menu').append(menuButton);
+
+let modal = document.createElement('div');
+modal.classList.add('modal');
+modal.innerHTML = `
+  <button class='save'>Сохранить</button>
+  <button class='result'>Результаты</button>
+  <button class='size three'>3x3</button>
+  <button class='size four'>4x4</button>
+  <button class='size five'>5x5</button>
+  <button class='size six'>6x6</button>
+  <button class='size seven'>7x7</button>
+  <button class='size eight'>8x8</button>
+  <button class='close'>Закрыть</button>
+`
+modal.tabIndex = '0';
+document.body.prepend(modal);
+
+document.querySelector('.save').addEventListener('click', (evt)=>{
+  let array = [];
+  document.querySelectorAll('.cell').forEach(item=>{
+    array.push(item.innerHTML);
+  })
+  localStorage.setItem('field', array);
+  localStorage.setItem('timer', timer);
+  localStorage.setItem('stepCount', stepsCount);
+  console.log('dasd');
+})
+
+menuButton.addEventListener('click', (evt)=>{
+  modal.classList.add('active');
+  clearInterval(timerInterval);
+})
+
+document.querySelector('.close').addEventListener('click', (evt)=>{
+  modal.classList.remove('active');
+  timerInterval = setInterval(() => {
+    timer += 100;
+    let temporaryTimer = timer;
+    let ms = temporaryTimer % 1000;
+    ms = !ms ? '000' : ms; 
+    temporaryTimer = Math.floor(temporaryTimer/1000);
+    let sec = temporaryTimer % 60 + '';
+    sec = sec.length === 1 ? '0' + sec : sec;
+    temporaryTimer = Math.floor(temporaryTimer/60);
+    let min = temporaryTimer % 60 + '';
+    min = min.length === 1 ? '0' + min : min;
+    timerString = min + ':' + sec + ':' + ms;
+    timerString = timerString.slice(0, timerString.length - 2);
+    document.querySelector('.clock').innerText = timerString;
+  }, 100);
+})
+
 function fillField(arr) {
   
   let container = document.querySelector('.container');
@@ -104,7 +160,14 @@ function createField(rowLength, array) {
   fillField(arr);
 }
 
-createField(rowLength);
+if (localStorage.getItem('field')) {
+  createField(rowLength, localStorage.getItem('field').split(','));
+  timer = localStorage.getItem('timer')*1;
+  stepsCount = localStorage.getItem('stepCount')*1;
+  step.innerText = 'Ходов: ' + stepsCount;
+} else {
+  createField(rowLength);
+}
  
 function drag(evt, item, index, device){
   const end = device === 'computer' ? 'mouseup' : 'touchend';

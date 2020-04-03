@@ -98,6 +98,33 @@ body {
   font-size: 2vw;
 }
 
+.modal {
+  opacity: 0;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.modal button {
+  margin-right: 10px;
+  height: 3vw;
+  width: 50%;
+}
+
+.modal.active {
+  opacity: 1;
+  z-index: 1;
+}
+
 body {
   width: 95vw;
 }
@@ -114,7 +141,8 @@ body {
   .clock {
     font-size: 5vw;
   }
-  .menu button {
+  .menu button,
+  .modal button {
     margin-right: 10px;
     height: 10vw;
     font-size: 4vw;
