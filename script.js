@@ -7,7 +7,7 @@ let cell = [];
 
 let timerString = '00:00:0';
 
-setInterval(() => {
+let timerInterval = setInterval(() => {
   timer += 100;
   let temporaryTimer = timer;
   let ms = temporaryTimer % 1000;
@@ -59,6 +59,11 @@ reset.classList.add('reset');
 reset.innerText = 'Начать заново';
 document.querySelector('.menu').append(reset);
 
+let switcher = document.createElement('button');
+switcher.classList.add('switcher');
+switcher.innerText = 'Стоп';
+document.querySelector('.menu').append(switcher);
+
 function fillField(arr) {
   
   let container = document.querySelector('.container');
@@ -71,28 +76,31 @@ function fillField(arr) {
   cells = document.querySelectorAll('.cell');
 }
 
-function createField(rowLength) {
+function createField(rowLength, array) {
   let arr = [];
-  for (let i=0; i<rowLength*rowLength - 1; i += 1) {
-    arr.push(i+1);
+  if (!array){
+    for (let i=0; i<rowLength*rowLength - 1; i += 1) {
+      arr.push(i+1);
+    }
+    arr.push(0);
+    let bool = true;
+    while(bool) {
+      arr = shuffleArray(arr);
+      //проверка на проходимость
+      let inv = 0;
+      for (let i=0; i<arr.length; i += 1)
+        if (arr[i])
+          for (let j=0; j<i; j += 1)
+            if (arr[j] > arr[i])
+              inv += 1;
+      for (let i=0; i<arr.length; i += 1)
+        if (arr[i] === 0)
+          inv += 1 + Math.floor(i / rowLength);
+      
+      bool = inv % 2 === 0 ? false : true;
+    }
   }
-  arr.push(0);
-  let bool = true;
-  while(bool) {
-    arr = shuffleArray(arr);
-    //проверка на проходимость
-    let inv = 0;
-    for (let i=0; i<arr.length; i += 1)
-      if (arr[i])
-        for (let j=0; j<i; j += 1)
-          if (arr[j] > arr[i])
-            inv += 1;
-    for (let i=0; i<arr.length; i += 1)
-      if (arr[i] === 0)
-        inv += 1 + Math.floor(i / rowLength);
-    
-    bool = inv % 2 === 0 ? false : true;
-  }
+  arr = array !== undefined ? array : arr;
   fillField(arr);
 }
 
@@ -227,6 +235,47 @@ document.querySelector('.reset').addEventListener('click', (evt)=>{
       moveByClick(evt, item, index);
     });
   });
+})
+
+document.querySelector('.switcher').addEventListener('click', (evt)=>{
+  if (document.querySelector('.switcher').innerText === 'Стоп') {
+    document.querySelector('.switcher').innerText = 'Старт';
+    clearInterval(timerInterval);
+    let array = [];
+    document.querySelectorAll('.cell').forEach(item=>{
+      array.push(item.innerText);
+      item.remove();
+    })
+    createField(rowLength, array);
+  } else if (document.querySelector('.switcher').innerText === 'Старт') {
+    document.querySelector('.switcher').innerText = 'Стоп';
+    timerInterval = setInterval(() => {
+      timer += 100;
+      let temporaryTimer = timer;
+      let ms = temporaryTimer % 1000;
+      ms = !ms ? '000' : ms; 
+      temporaryTimer = Math.floor(temporaryTimer/1000);
+      let sec = temporaryTimer % 60 + '';
+      sec = sec.length === 1 ? '0' + sec : sec;
+      temporaryTimer = Math.floor(temporaryTimer/60);
+      let min = temporaryTimer % 60 + '';
+      min = min.length === 1 ? '0' + min : min;
+      timerString = min + ':' + sec + ':' + ms;
+      timerString = timerString.slice(0, timerString.length - 2);
+      document.querySelector('.clock').innerText = timerString;
+    }, 100);
+    cells.forEach((item, index)=>{
+      item.addEventListener('mousedown', (evt)=>{
+        drag(evt, item,index, 'computer');
+      });
+      item.addEventListener('touchstart', (evt)=>{
+        drag(evt, item,index, 'phone');
+      });
+      item.addEventListener('click', (evt)=>{
+        moveByClick(evt, item, index);
+      });
+    });
+  }
 })
 
 cells.forEach((item, index)=>{

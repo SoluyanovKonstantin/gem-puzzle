@@ -61,9 +61,11 @@
 .menu div {
   display: inline-block;
   margin-right: 10px;
+  vertical-align: middle;
 }
 
-.reset {
+.menu button {
+  margin-right: 10px;
   height: 3vw;
 }
 
@@ -111,5 +113,19 @@ body {
   }
   .clock {
     font-size: 5vw;
+  }
+  .menu button {
+    margin-right: 10px;
+    height: 10vw;
+    font-size: 4vw;
+  }
+  
+  .step {
+    font-size: 4vw;
+  }
+  .menu {
+    width: 95vw;
+    height: 10vw;
+    margin-top: 5px;
   }
 }
