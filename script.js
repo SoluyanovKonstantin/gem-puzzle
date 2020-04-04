@@ -258,12 +258,16 @@ document.querySelector('.save').addEventListener('click', () => {
 
 menuButton.addEventListener('click', () => {
   modal.classList.add('active');
-  clearInterval(timerInterval);
+  if (document.querySelector('.switcher').innerText === 'Стоп') {
+    clearInterval(timerInterval);
+  }
 });
 
 document.querySelector('.close').addEventListener('click', () => {
   modal.classList.remove('active');
-  timerInterval = setInterval(startTimer, 100);
+  if (document.querySelector('.switcher').innerText === 'Стоп') {
+    timerInterval = setInterval(startTimer, 100);
+  }
 });
 
 
