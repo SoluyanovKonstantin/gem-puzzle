@@ -1,7 +1,7 @@
-const rowLength = 4;
+let rowLength = 4;
 let isMove = false;
 let stepsCount = 0;
-let timer = 0;
+let timer = localStorage.getItem('timer') * 1;
 let cells = [];
 
 let timerString = '00:00:0';
@@ -28,7 +28,7 @@ document.querySelector('.menu').append(reset);
 
 const switcher = document.createElement('button');
 switcher.classList.add('switcher');
-switcher.innerText = 'Стоп';
+switcher.innerText = 'Старт';
 document.querySelector('.menu').append(switcher);
 
 const menuButton = document.createElement('button');
@@ -85,6 +85,22 @@ function startTimer() {
   timerString = timerString.slice(0, timerString.length - 2);
   document.querySelector('.clock').innerText = timerString;
 }
+startTimer();
+
+function checkWin() {
+  let bool = true;
+  const array = document.querySelectorAll('.cell');
+  let index = 0;
+  while (bool && index < (array.length - 1)) {
+    if ((array[index].innerText) * 1 !== (index + 1)) {
+      bool = false;
+    }
+    index += 1;
+  }
+  if (bool) {
+    console.log('win');
+  }
+}
 
 function moveByClick(evt, item1, index) {
   if (isMove) {
@@ -100,6 +116,7 @@ function moveByClick(evt, item1, index) {
       item.style.animation = '';
       stepsCount += 1;
       step.innerText = `Ходов: ${stepsCount}`;
+      checkWin();
     }, 440);
   } else if ((index + 1) % rowLength !== 0 && cells[index + 1].innerHTML === '&nbsp;') {
     item.style.animation = 'toRight 0.5s';
@@ -109,6 +126,7 @@ function moveByClick(evt, item1, index) {
       item.style.animation = '';
       stepsCount += 1;
       step.innerText = `Ходов: ${stepsCount}`;
+      checkWin();
     }, 440);
   } else if ((index + 1) > rowLength && cells[index - rowLength].innerHTML === '&nbsp;') {
     item.style.animation = 'toTop 0.5s';
@@ -118,6 +136,7 @@ function moveByClick(evt, item1, index) {
       item.style.animation = '';
       stepsCount += 1;
       step.innerText = `Ходов: ${stepsCount}`;
+      checkWin();
     }, 440);
   } else if ((index + 1) <= rowLength * (rowLength - 1) && cells[index + rowLength].innerHTML === '&nbsp;') {
     item.style.animation = 'toDown 0.5s';
@@ -127,6 +146,7 @@ function moveByClick(evt, item1, index) {
       item.style.animation = '';
       stepsCount += 1;
       step.innerText = `Ходов: ${stepsCount}`;
+      checkWin();
     }, 440);
   }
 }
@@ -140,6 +160,12 @@ function fillField(arr) {
     container.append(cell);
   }
   cells = document.querySelectorAll('.cell');
+  cells.forEach((item) => {
+    const item1 = item;
+    const size = 100 / rowLength;
+    item1.style.width = `${size}%`;
+    item1.style.height = `${size}%`;
+  });
 }
 
 function createField(array) {
@@ -163,6 +189,9 @@ function createField(array) {
       }
       for (let i = 0; i < arr.length; i += 1) {
         if (arr[i] === 0) { inv += 1 + Math.floor(i / rowLength); }
+      }
+      if (rowLength % 2 !== 0) {
+        inv += 1;
       }
 
       bool = inv % 2 !== 0;
@@ -219,6 +248,7 @@ function drag(evt, item1, index, device) {
       item.innerHTML = '&nbsp;';
       stepsCount += 1;
       step.innerText = `Ходов: ${stepsCount}`;
+      checkWin();
     }
   }
 
@@ -244,7 +274,46 @@ function drag(evt, item1, index, device) {
   });
 }
 
-let timerInterval = setInterval(startTimer, 100);
+let timerInterval;
+
+function restart() {
+  for (let i = 0; i < cells.length; i += 1) {
+    cells[i].remove();
+  }
+  createField();
+  timer = 0;
+  document.querySelector('.clock').innerText = '00:00:0';
+  stepsCount = 0;
+  step.innerHTML = `Ходов: ${stepsCount}`;
+  if (document.querySelector('.switcher').innerText === 'Стоп') {
+    document.querySelector('.switcher').innerText = 'Старт';
+    clearInterval(timerInterval);
+  }
+}
+
+document.querySelectorAll('.size').forEach((item) => {
+  item.addEventListener('click', () => {
+    if (item.classList.contains('three')) {
+      rowLength = 3;
+      restart();
+    } else if (item.classList.contains('four')) {
+      rowLength = 4;
+      restart();
+    } else if (item.classList.contains('five')) {
+      rowLength = 5;
+      restart();
+    } else if (item.classList.contains('six')) {
+      rowLength = 6;
+      restart();
+    } else if (item.classList.contains('seven')) {
+      rowLength = 7;
+      restart();
+    } else if (item.classList.contains('eight')) {
+      rowLength = 8;
+      restart();
+    }
+  });
+});
 
 document.querySelector('.save').addEventListener('click', () => {
   const array = [];
@@ -299,6 +368,10 @@ document.querySelector('.reset').addEventListener('click', () => {
       moveByClick(evt, item, index);
     });
   });
+  if (document.querySelector('.switcher').innerText === 'Старт') {
+    timerInterval = setInterval(startTimer, 100);
+    document.querySelector('.switcher').innerText = 'Стоп';
+  }
 });
 
 document.querySelector('.switcher').addEventListener('click', () => {
@@ -340,16 +413,4 @@ document.querySelector('.switcher').addEventListener('click', () => {
       });
     });
   }
-});
-
-cells.forEach((item, index) => {
-  item.addEventListener('mousedown', (evt) => {
-    drag(evt, item, index, 'computer');
-  });
-  item.addEventListener('touchstart', (evt) => {
-    drag(evt, item, index, 'phone');
-  });
-  item.addEventListener('click', (evt) => {
-    moveByClick(evt, item, index);
-  });
 });
