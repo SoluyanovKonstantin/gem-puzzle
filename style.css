@@ -70,6 +70,31 @@
   text-align: center;
 }
 
+.results {
+  width: 40vw;
+  height: 40vw;
+  background-color: white;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.results div {
+    margin-top: 25px;
+}
+
+.results button {
+    position: absolute;
+    bottom: 25px;
+}
+
 .container.pause::before {
   position: absolute;
   content: 'Нажмите старт';
@@ -163,10 +188,15 @@ body {
 }
 
 @media (max-width: 768px) {
+  .results,
   .container.pause::before,
   .container {
     width: 95vw;
     height: 95vw;
+  }
+
+  .results {
+    height: 95vh;
   }
 
   .container.pause::before {

@@ -121,10 +121,10 @@ function checkWin() {
       results.push(result);
       results.sort((a, b) => {
         if (a.steps > b.steps) {
-          return -1;
+          return 1;
         }
         if (a.steps < b.steps) {
-          return 1;
+          return -1;
         }
 
         return 0;
@@ -362,6 +362,38 @@ document.querySelector('.save').addEventListener('click', () => {
   localStorage.setItem('field', array);
   localStorage.setItem('timer', timer);
   localStorage.setItem('stepCount', stepsCount);
+});
+
+document.querySelector('.result').addEventListener('click', () => {
+  if (localStorage.getItem('results') === null) {
+    const result = document.createElement('div');
+    result.classList.add('results');
+    result.innerHTML = `
+    <div>результатов нет</div>
+    <button class='closeResults'>закрыть</button>
+    `;
+    document.body.append(result);
+    document.querySelector('.closeResults').addEventListener('click', () => {
+      result.remove();
+    });
+  } else {
+    const results = JSON.parse(localStorage.getItem('results'));
+    const resultWindow = document.createElement('div');
+    resultWindow.classList.add('results');
+    results.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.innerHTML = `<div>${index + 1}. Время: ${item.time}, Ходы: ${item.steps}</div>`;
+      resultWindow.append(div);
+    });
+    const closeResults = document.createElement('button');
+    closeResults.classList.add('closeResults');
+    closeResults.innerHTML = 'закрыть';
+    resultWindow.append(closeResults);
+    document.body.append(resultWindow);
+    closeResults.addEventListener('click', () => {
+      resultWindow.remove();
+    });
+  }
 });
 
 menuButton.addEventListener('click', () => {
