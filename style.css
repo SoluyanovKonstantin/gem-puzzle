@@ -51,6 +51,38 @@
   font-size: 0;
 }
 
+.win {
+  position: fixed;
+  width: 50vw;
+  height: 50vw;
+  border: 1px solid black;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  z-index: 2;
+  display: flex;
+  font-family: sans-serif;
+  font-size: 24px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.container.pause::before {
+  position: absolute;
+  content: 'Нажмите старт';
+  font-size: 24px;
+  font-family: sans-serif;
+  width: 40vw;
+  height: 22vw;
+  padding-top: 18vw;
+  background-color: white;
+  z-index: 1;
+  text-align: center;
+}
+
 .menu {
   width: 40vw;
   height: 3vw;
@@ -123,7 +155,7 @@ body {
 
 .modal.active {
   display: flex;
-  z-index: 1;
+  z-index: 2;
 }
 
 body {
@@ -131,9 +163,15 @@ body {
 }
 
 @media (max-width: 768px) {
-  .container{
+  .container.pause::before,
+  .container {
     width: 95vw;
     height: 95vw;
+  }
+
+  .container.pause::before {
+    height: 50vw;
+    padding-top: 45vw;
   }
 
   .cell {

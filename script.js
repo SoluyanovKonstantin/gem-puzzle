@@ -98,7 +98,42 @@ function checkWin() {
     index += 1;
   }
   if (bool) {
-    console.log('win');
+    const result = {
+      time: timerString,
+      steps: stepsCount,
+    };
+    const win = document.createElement('div');
+    win.classList.add('win');
+    win.innerHTML = `
+      <div>Ура! Вы решили головоломку за ${result.time} и ${result.steps} ходов</div>
+    `;
+    document.body.append(win);
+    setTimeout(() => {
+      win.remove();
+    }, 7000);
+
+    if (localStorage.getItem('results') === null) {
+      const results = [];
+      results.push(result);
+      localStorage.setItem('results', JSON.stringify(results));
+    } else {
+      let results = JSON.parse(localStorage.getItem('results'));
+      results.push(result);
+      results.sort((a, b) => {
+        if (a.steps > b.steps) {
+          return -1;
+        }
+        if (a.steps < b.steps) {
+          return 1;
+        }
+
+        return 0;
+      });
+      if (results.length > 10) {
+        results = results.slice(0, 11);
+      }
+      localStorage.setItem('results', JSON.stringify(results));
+    }
   }
 }
 
@@ -178,7 +213,7 @@ function createField(array) {
     let bool = true;
     while (bool) {
       arr = shuffleArray(arr);
-      // проверка на проходимость
+      // проверка на проходимость возможно работает
       let inv = 0;
       for (let i = 0; i < arr.length; i += 1) {
         if (arr[i]) {
@@ -188,7 +223,9 @@ function createField(array) {
         }
       }
       for (let i = 0; i < arr.length; i += 1) {
-        if (arr[i] === 0) { inv += 1 + Math.floor(i / rowLength); }
+        if (arr[i] === 0) {
+          inv += 1 + Math.floor(i / rowLength);
+        }
       }
       if (rowLength % 2 !== 0) {
         inv += 1;
@@ -287,8 +324,10 @@ function restart() {
   step.innerHTML = `Ходов: ${stepsCount}`;
   if (document.querySelector('.switcher').innerText === 'Стоп') {
     document.querySelector('.switcher').innerText = 'Старт';
+    document.querySelector('.container').classList.add('pause');
     clearInterval(timerInterval);
   }
+  modal.classList.remove('active');
 }
 
 document.querySelectorAll('.size').forEach((item) => {
@@ -371,12 +410,14 @@ document.querySelector('.reset').addEventListener('click', () => {
   if (document.querySelector('.switcher').innerText === 'Старт') {
     timerInterval = setInterval(startTimer, 100);
     document.querySelector('.switcher').innerText = 'Стоп';
+    document.querySelector('.container').classList.remove('pause');
   }
 });
 
 document.querySelector('.switcher').addEventListener('click', () => {
   if (document.querySelector('.switcher').innerText === 'Стоп') {
     document.querySelector('.switcher').innerText = 'Старт';
+    document.querySelector('.container').classList.add('pause');
     clearInterval(timerInterval);
     const array = [];
     document.querySelectorAll('.cell').forEach((item) => {
@@ -386,6 +427,7 @@ document.querySelector('.switcher').addEventListener('click', () => {
     createField(array);
   } else if (document.querySelector('.switcher').innerText === 'Старт') {
     document.querySelector('.switcher').innerText = 'Стоп';
+    document.querySelector('.container').classList.remove('pause');
     timerInterval = setInterval(() => {
       timer += 100;
       let temporaryTimer = timer;
