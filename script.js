@@ -108,11 +108,12 @@ function checkWin() {
     win.classList.add('win');
     win.innerHTML = `
       <div>Ура! Вы решили головоломку за ${result.time} и ${result.steps} ходов</div>
+      <button class='closeWin'>закрыть</button>
     `;
     document.body.append(win);
-    setTimeout(() => {
+    document.querySelector('.closeWin').addEventListener('click', () => {
       win.remove();
-    }, 7000);
+    });
 
     if (localStorage.getItem('results') === null) {
       const results = [];

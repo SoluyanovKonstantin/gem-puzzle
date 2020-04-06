@@ -191,6 +191,12 @@ body {
   width: 95vw;
 }
 
+.closeWin {
+  height: 25px;
+  position: absolute;
+  bottom: 25px;
+}
+
 @media (max-width: 768px) {
   .results,
   .container.pause::before,
