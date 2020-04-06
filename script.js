@@ -453,7 +453,7 @@ document.querySelector('.close').addEventListener('click', () => {
 
 
 if (localStorage.getItem('field')) {
-  rowLength = localStorage.getItem('rowLength');
+  rowLength = localStorage.getItem('rowLength') * 1;
   createField(localStorage.getItem('field').split(','));
   timer = localStorage.getItem('timer') * 1;
   stepsCount = localStorage.getItem('stepCount') * 1;
