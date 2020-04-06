@@ -39,6 +39,7 @@ document.querySelector('.menu').append(menuButton);
 const modal = document.createElement('div');
 modal.classList.add('modal');
 modal.innerHTML = `
+<div class='modal__wrapper'>
   <button class='save'>Сохранить</button>
   <button class='result'>Результаты</button>
   <button class='size three'>3x3</button>
@@ -48,6 +49,7 @@ modal.innerHTML = `
   <button class='size seven'>7x7</button>
   <button class='size eight'>8x8</button>
   <button class='close'>Закрыть</button>
+</div>
 `;
 modal.tabIndex = '0';
 document.body.prepend(modal);

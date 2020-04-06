@@ -155,6 +155,7 @@ body {
   font-size: 2vw;
 }
 
+.modal__wrapper,
 .modal {
   position: fixed;
   width: 100vw;
@@ -170,6 +171,8 @@ body {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+
+  overflow-y: auto;
 }
 
 .modal button {
@@ -178,7 +181,8 @@ body {
   width: 50%;
 }
 
-.modal.active {
+.modal.active,
+.modal.active .modal__wrapper{
   display: flex;
   z-index: 2;
 }
@@ -193,6 +197,10 @@ body {
   .container {
     width: 95vw;
     height: 95vw;
+  }
+
+  .modal__wrapper {
+    height: 95vh;
   }
 
   .results {
