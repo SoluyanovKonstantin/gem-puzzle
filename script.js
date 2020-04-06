@@ -398,6 +398,7 @@ document.querySelector('.save').addEventListener('click', () => {
     array.push(item.innerHTML);
   });
   localStorage.setItem('field', array);
+  localStorage.setItem('rowLength', rowLength);
   localStorage.setItem('timer', timer);
   localStorage.setItem('stepCount', stepsCount);
 });
@@ -452,6 +453,7 @@ document.querySelector('.close').addEventListener('click', () => {
 
 
 if (localStorage.getItem('field')) {
+  rowLength = localStorage.getItem('rowLength');
   createField(localStorage.getItem('field').split(','));
   timer = localStorage.getItem('timer') * 1;
   stepsCount = localStorage.getItem('stepCount') * 1;
