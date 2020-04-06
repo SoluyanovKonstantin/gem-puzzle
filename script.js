@@ -132,7 +132,7 @@ function checkWin() {
         return 0;
       });
       if (results.length > 10) {
-        results = results.slice(0, 11);
+        results = results.slice(0, 10);
       }
       localStorage.setItem('results', JSON.stringify(results));
     }
