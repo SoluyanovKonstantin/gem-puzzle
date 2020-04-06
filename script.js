@@ -138,11 +138,14 @@ function checkWin() {
 }
 
 function moveByClick(evt, item1, index) {
+  const item = item1;
+  if (item.style.animation !== '') {
+    return;
+  }
   if (isMove) {
     isMove = false;
     return;
   }
-  const item = item1;
   if ((index + 1) % rowLength !== 1 && cells[index - 1].innerHTML === '&nbsp;') {
     item.style.animation = 'toLeft 0.5s';
     setTimeout(() => {
@@ -277,11 +280,12 @@ function drag(evt, item1, index, device) {
       item.style.left = 0;
       item.style.top = 0;
       item.style['z-index'] = 0;
-      if (direction === 'left') direction = -1;
-      else if (direction === 'right') direction = 1;
-      else if (direction === 'top') direction = -rowLength;
-      else if (direction === 'bottom') direction = rowLength;
-      cells[index + direction].innerHTML = item.innerHTML;
+      let directionNumber;
+      if (direction === 'left') directionNumber = -1;
+      else if (direction === 'right') directionNumber = 1;
+      else if (direction === 'top') directionNumber = -rowLength;
+      else if (direction === 'bottom') directionNumber = rowLength;
+      cells[index + directionNumber].innerHTML = item.innerHTML;
       item.innerHTML = '&nbsp;';
       stepsCount += 1;
       step.innerText = `Ходов: ${stepsCount}`;
@@ -303,11 +307,42 @@ function drag(evt, item1, index, device) {
   document.addEventListener(middle, onMouseMove);
 
   document.addEventListener(end, () => {
+    const leftNow = item.style.left.slice(0, item.style.left.length - 2);
+    const topNow = item.style.top.slice(0, item.style.top.length - 2);
+
+    if (leftNow >= width / 2 || leftNow <= -width / 2
+        || topNow >= height / 2 || topNow <= -height / 2) {
+      isDeleteListener = true;
+      item.onmouseup = null;
+      item.style.left = 0;
+      item.style.top = 0;
+      item.style['z-index'] = 0;
+      let directionNumber;
+      if ((index + 1) % rowLength !== 1 && cells[index - 1].innerHTML === '&nbsp;') {
+        direction = 'left';
+      } else if ((index + 1) % rowLength !== 0 && cells[index + 1].innerHTML === '&nbsp;') {
+        direction = 'right';
+      } else if ((index + 1) > rowLength && cells[index - rowLength].innerHTML === '&nbsp;') {
+        direction = 'top';
+      } else if ((index + 1) <= rowLength * (rowLength - 1) && cells[index + rowLength].innerHTML === '&nbsp;') {
+        direction = 'bottom';
+      }
+      if (direction === 'left') directionNumber = -1;
+      else if (direction === 'right') directionNumber = 1;
+      else if (direction === 'top') directionNumber = -rowLength;
+      else if (direction === 'bottom') directionNumber = rowLength;
+      cells[index + directionNumber].innerHTML = item.innerHTML;
+      item.innerHTML = '&nbsp;';
+      stepsCount += 1;
+      step.innerText = `Ходов: ${stepsCount}`;
+      checkWin();
+    } else {
+      item.onmouseup = null;
+      item.style.left = 0;
+      item.style.top = 0;
+      item.style['z-index'] = 0;
+    }
     document.removeEventListener(middle, onMouseMove);
-    item.onmouseup = null;
-    item.style.left = 0;
-    item.style.top = 0;
-    item.style['z-index'] = 0;
   });
 }
 
@@ -363,6 +398,8 @@ document.querySelector('.save').addEventListener('click', () => {
   localStorage.setItem('timer', timer);
   localStorage.setItem('stepCount', stepsCount);
 });
+
+window.addEventListener('touchmove', (event) => event.preventDefault(), { passive: false });
 
 document.querySelector('.result').addEventListener('click', () => {
   if (localStorage.getItem('results') === null) {
