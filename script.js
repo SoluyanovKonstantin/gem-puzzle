@@ -1,5 +1,6 @@
 let rowLength = 4;
 let isMove = false;
+let isAnimation = false;
 let stepsCount = 0;
 let timer = localStorage.getItem('timer') * 1;
 let cells = [];
@@ -141,6 +142,9 @@ function checkWin() {
 }
 
 function moveByClick(evt, item1, index) {
+  if (isAnimation) {
+    return;
+  }
   const item = item1;
   if (item.style.animation !== '') {
     return;
@@ -151,6 +155,7 @@ function moveByClick(evt, item1, index) {
   }
   if ((index + 1) % rowLength !== 1 && cells[index - 1].innerHTML === '&nbsp;') {
     item.style.animation = 'toLeft 0.5s';
+    isAnimation = true;
     setTimeout(() => {
       cells[index - 1].innerHTML = item.innerHTML;
       item.innerHTML = '&nbsp;';
@@ -161,6 +166,7 @@ function moveByClick(evt, item1, index) {
     }, 440);
   } else if ((index + 1) % rowLength !== 0 && cells[index + 1].innerHTML === '&nbsp;') {
     item.style.animation = 'toRight 0.5s';
+    isAnimation = true;
     setTimeout(() => {
       cells[index + 1].innerHTML = item.innerHTML;
       item.innerHTML = '&nbsp;';
@@ -171,6 +177,7 @@ function moveByClick(evt, item1, index) {
     }, 440);
   } else if ((index + 1) > rowLength && cells[index - rowLength].innerHTML === '&nbsp;') {
     item.style.animation = 'toTop 0.5s';
+    isAnimation = true;
     setTimeout(() => {
       cells[index - rowLength].innerHTML = item.innerHTML;
       item.innerHTML = '&nbsp;';
@@ -181,6 +188,7 @@ function moveByClick(evt, item1, index) {
     }, 440);
   } else if ((index + 1) <= rowLength * (rowLength - 1) && cells[index + rowLength].innerHTML === '&nbsp;') {
     item.style.animation = 'toDown 0.5s';
+    isAnimation = true;
     setTimeout(() => {
       cells[index + rowLength].innerHTML = item.innerHTML;
       item.innerHTML = '&nbsp;';
@@ -188,6 +196,11 @@ function moveByClick(evt, item1, index) {
       stepsCount += 1;
       step.innerText = `Ходов: ${stepsCount}`;
       checkWin();
+    }, 440);
+  }
+  if (isAnimation) {
+    setTimeout(() => {
+      isAnimation = false;
     }, 440);
   }
 }
@@ -462,7 +475,7 @@ if (localStorage.getItem('field')) {
   createField();
 }
 
-document.querySelector('.reset').addEventListener('click', () => {
+function resetGame() {
   cells.forEach((item) => {
     item.remove();
   });
@@ -486,9 +499,19 @@ document.querySelector('.reset').addEventListener('click', () => {
     document.querySelector('.switcher').innerText = 'Стоп';
     document.querySelector('.container').classList.remove('pause');
   }
+}
+
+document.querySelector('.reset').addEventListener('click', () => {
+  if (!isAnimation) {
+    resetGame();
+  } else {
+    setTimeout(() => {
+      resetGame();
+    }, 490);
+  }
 });
 
-document.querySelector('.switcher').addEventListener('click', () => {
+function pause() {
   if (document.querySelector('.switcher').innerText === 'Стоп') {
     document.querySelector('.switcher').innerText = 'Старт';
     document.querySelector('.container').classList.add('pause');
@@ -523,10 +546,20 @@ document.querySelector('.switcher').addEventListener('click', () => {
       });
       item.addEventListener('touchstart', (evt) => {
         drag(evt, item, index, 'phone');
-      });
+      }, { passive: true });
       item.addEventListener('click', (evt) => {
         moveByClick(evt, item, index);
       });
     });
+  }
+}
+
+document.querySelector('.switcher').addEventListener('click', () => {
+  if (!isAnimation) {
+    pause();
+  } else {
+    setTimeout(() => {
+      pause();
+    }, 490);
   }
 });
